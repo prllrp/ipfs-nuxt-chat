@@ -10,7 +10,7 @@
         </div>
         <div class="chat-body">
             <div class="chat-body-messages">
-                <div v-for="message in messages" class="chat-body-message">
+                <div v-for="message in messages" v-bind:key="message"  class="chat-body-message">
                     <div class="chat-body-message-text">
                         {{ message.text }}
                     </div>
@@ -31,8 +31,40 @@
 <script>
 const messages = [];
 export default {
-
+    data() {
+        return {
+            message: '',
+            messages: messages,
+            title: 'Chat'
+        };
+    },
+    methods: {
+        sendMessage() {
+            node.pubsub.publish('pubsub-test', new TextEncoder().encode({id: node.id(), time: new Date().getTime(), msg: this.message}))
+            messages.push({
+                text: this.message,
+                time: new Date().toLocaleTimeString()
+            });
+            this.message = '';
+        }
+    },
+    props: {
+        node: {
+            type: Object,
+            required: true
+        }
+    },
+    onMount(){
+        node.pubsub.subscribe('pubsub-test', (msg) => {
+            console.log(msg)
+            messages.push({
+                text: msg.data.toString(),
+                time: new Date().toLocaleTimeString()
+            });
+        })
+    }
 }
+
 </script>
 
 <style>

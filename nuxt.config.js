@@ -8,6 +8,7 @@ export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'nuxt-chat',
+    script:[{src: 'https://cdn.jsdelivr.net/npm/ipfs/dist/index.min.js'}],
     htmlAttrs: {
       lang: 'en'
     },
